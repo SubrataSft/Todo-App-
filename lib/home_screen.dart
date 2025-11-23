@@ -13,15 +13,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final titleController = TextEditingController();
-  final descController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   Future<void> _showDialog({TODOModel? todo}) async {
     if (todo != null) {
       titleController.text = todo.title;
-      descController.text = todo.description ?? "";
+      descriptionController.text = todo.description ?? "";
     } else {
       titleController.clear();
-      descController.clear();
+      descriptionController.clear();
     }
 
     return showDialog(
@@ -34,13 +34,29 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               TextField(
                 controller: titleController,
-                decoration: const InputDecoration(hintText: "Title"),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black,width: 2),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.purple,width: 4),
+                  ),
+                  hintText: "Title",
+                ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               TextField(
-                controller: descController,
+                controller: descriptionController,
                 maxLines: 3,
-                decoration: const InputDecoration(hintText: "Description"),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black,width: 2),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.purple, width: 4),
+                  ),
+                  hintText: "Description",
+                ),
               ),
             ],
           ),
@@ -59,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   provider.addToDoList(
                     TODOModel(
                       title: titleController.text,
-                      description: descController.text,
+                      description: descriptionController.text,
                       isCompleted: false,
                     ),
                   );
@@ -67,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   provider.updateToDo(
                     todo,
                     titleController.text,
-                    descController.text,
+                    descriptionController.text,
                   );
                 }
 
@@ -87,7 +103,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Todo List",style: TextStyle(color: Colors.white),),centerTitle: true,
+        title: const Text("Todo List", style: TextStyle(color: Colors.white)),
+        centerTitle: true,
         backgroundColor: const Color(0xff622CA7),
       ),
       body: ListView.builder(
@@ -105,8 +122,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               title: Text(
                 todo.title,
-                style:
-                const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  decoration: todo.isCompleted
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none,
+                  color: todo.isCompleted ? Colors.grey : Colors.black,
+                ),
               ),
               subtitle: Text(todo.description ?? ""),
               trailing: Row(
@@ -127,8 +150,8 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xff622CA7),
-        child: const Icon(Icons.add, size: 30,color: Colors.white,),
+        backgroundColor: Colors.green,
+        child: const Icon(Icons.add, size: 30, color: Colors.white),
         onPressed: () => _showDialog(),
       ),
     );
